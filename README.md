@@ -40,20 +40,20 @@ Float_t jet_pt_corr = JEC.GetCorrectedPT();
 In order to get the up and down variations for jet measurements use the following method.
 
 1. Include the JetUncertainty header file.
-'''
+```
 #include "JetUncertainty.h"
-'''
-2. Input the uncertainty text file associated to the dataset being analyzed. 
+```
+3. Input the uncertainty text file associated to the dataset being analyzed. 
 The example below is for jets in 2023 PbPb datasets.
-'''
+```
 JetUncertainty JEU("Spring23PbPb_TotalUncertainties.txt");
-'''
-3. Set the momentum of the JetUncertainty header object (JEU) to be the corrected momentum of the jet. Then get the up and down variations out of the JEU.
-'''
+```
+5. Set the momentum of the JetUncertainty header object (JEU) to be the corrected momentum of the jet. Then get the up and down variations out of the JEU.
+```
 JEU.SetJetPT(jet_pt_corr);
 JEU.SetJetEta(jteta[j]);
 JEU.SetJetPhi(jtphi[j]);
 
 double CorrectedPT_Down = jet_pt_corr * (1 - JEU.GetUncertainty().first);
 double CorrectedPT_Up = jet_pt_corr * (1 + JEU.GetUncertainty().second);
-'''
+```

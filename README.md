@@ -43,12 +43,12 @@ In order to get the up and down variations for jet measurements use the followin
 ```
 #include "JetUncertainty.h"
 ```
-3. Input the uncertainty text file associated to the dataset being analyzed. 
+2. Input the uncertainty text file associated to the dataset being analyzed. 
 The example below is for jets in 2023 PbPb datasets.
 ```
 JetUncertainty JEU("Spring23PbPb_TotalUncertainties.txt");
 ```
-5. Set the momentum of the JetUncertainty header object (JEU) to be the corrected momentum of the jet. Then get the up and down variations out of the JEU.
+3. Set the momentum of the JetUncertainty header object (JEU) to be the corrected momentum of the jet. Then get the up and down variations out of the JEU.
 ```
 JEU.SetJetPT(jet_pt_corr);
 JEU.SetJetEta(jteta[j]);
@@ -56,4 +56,26 @@ JEU.SetJetPhi(jtphi[j]);
 
 double CorrectedPT_Down = jet_pt_corr * (1 - JEU.GetUncertainty().first);
 double CorrectedPT_Up = jet_pt_corr * (1 + JEU.GetUncertainty().second);
+```
+
+## Selecting Jets
+
+To determine whether to use a jet for analysis one can use the appropriate JetSelection header file by following the steps below. The example below is for the leading jet in a PbPb event.
+
+These JetSelection header files apply a jet veto map, which excludes jets that lie in faulty detector regions such as the barrel pixel failure. These JetSelection header files also check the jet passes the jet ID selection by following the suggested criteria for AK4CHS jets on this page: https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetID13p6TeV
+The JetSelection_pp.h includes all of thse jet ID selections, and the JetSelection_PbPb.h includes only the leptonic selections. The veto map being applied is the latest version as of November 25th in 2025, but one can change the veto map used. Jet veto maps are regularly uploaded to this GitHub repository: https://github.com/cms-jet/JECDatabase/tree/master/jet_veto_maps. The latest veto map as of November 25th, 2025 can be quickly grabbed with wget https://github.com/cms-jet/JECDatabase/raw/refs/heads/master/jet_veto_maps/Winter25Prompt25/Winter25Prompt25_RunCDE.root.
+
+1. Include the header file used to apply the corrections.
+```
+#include "JetSelection_PbPb.h"
+```
+2. Declare the jet selection object.
+```
+JetSelect js;
+// if a different veto map is desired declare the object like below instead of above
+// JetSelect js("/path/to/file/JetVetoMap.root");
+```
+3. Check if each individual jet used for analysis passes the selections. 
+```
+if(!js.JetSelection(jteta[0], jtphi[0], jtPfCEF[0], jtPfNEF[0],jtPfMUF[0])){continue;}
 ```
